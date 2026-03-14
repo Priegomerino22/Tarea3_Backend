@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.escom.loginapi.model.AuthResponse
 import com.escom.loginapi.model.LoginRequest
@@ -36,6 +38,7 @@ class LoginActivity : ComponentActivity() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color(0xFFF3E8FF))
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -45,26 +48,46 @@ class LoginActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Button(onClick = { finish() }) {
-                        Text("Regresar")
+                    Button(
+                        onClick = { finish() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF9575CD)
+                        )
+                    ) {
+                        Text("Regresar", color = Color.White)
                     }
 
-                    Button(onClick = { recreate() }) {
-                        Text("Recargar")
+                    Button(
+                        onClick = { recreate() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFB39DDB)
+                        )
+                    ) {
+                        Text("Recargar", color = Color.White)
                     }
 
                 }
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                Text("Login", style = MaterialTheme.typography.headlineMedium)
+                Text(
+                    "Login",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color(0xFF5B2C87)
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
-                    label = { Text("Username") }
+                    label = { Text("Username") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF7E57C2),
+                        unfocusedBorderColor = Color(0xFFB39DDB),
+                        focusedLabelColor = Color(0xFF7E57C2),
+                        cursorColor = Color(0xFF7E57C2)
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -72,67 +95,78 @@ class LoginActivity : ComponentActivity() {
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text("Password") }
+                    label = { Text("Password") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF7E57C2),
+                        unfocusedBorderColor = Color(0xFFB39DDB),
+                        focusedLabelColor = Color(0xFF7E57C2),
+                        cursorColor = Color(0xFF7E57C2)
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Button(onClick = {
+                Button(
+                    onClick = {
 
-                    val request = LoginRequest(username, password)
+                        val request = LoginRequest(username, password)
 
-                    authService.login(request)
-                        .enqueue(object : Callback<AuthResponse> {
+                        authService.login(request)
+                            .enqueue(object : Callback<AuthResponse> {
 
-                            override fun onResponse(
-                                call: Call<AuthResponse>,
-                                response: Response<AuthResponse>
-                            ) {
+                                override fun onResponse(
+                                    call: Call<AuthResponse>,
+                                    response: Response<AuthResponse>
+                                ) {
 
-                                if (response.isSuccessful) {
+                                    if (response.isSuccessful) {
 
-                                    val intent = Intent(
-                                        this@LoginActivity,
-                                        WelcomeActivity::class.java
-                                    )
+                                        val intent = Intent(
+                                            this@LoginActivity,
+                                            WelcomeActivity::class.java
+                                        )
 
-                                    intent.putExtra(
-                                        "username",
-                                        response.body()?.username
-                                    )
+                                        intent.putExtra(
+                                            "username",
+                                            response.body()?.username
+                                        )
 
-                                    startActivity(intent)
+                                        startActivity(intent)
 
-                                } else {
+                                    } else {
+
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Credenciales incorrectas",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                    }
+
+                                }
+
+                                override fun onFailure(
+                                    call: Call<AuthResponse>,
+                                    t: Throwable
+                                ) {
 
                                     Toast.makeText(
                                         this@LoginActivity,
-                                        "Credenciales incorrectas",
+                                        "Error de conexión",
                                         Toast.LENGTH_LONG
                                     ).show()
 
                                 }
 
-                            }
+                            })
 
-                            override fun onFailure(
-                                call: Call<AuthResponse>,
-                                t: Throwable
-                            ) {
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF7E57C2)
+                    )
+                ) {
 
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Error de conexión",
-                                    Toast.LENGTH_LONG
-                                ).show()
-
-                            }
-
-                        })
-
-                }) {
-
-                    Text("Iniciar sesión")
+                    Text("Iniciar sesión", color = Color.White)
 
                 }
 
